@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bubble Popper</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(#74ebd5, #ACB6E5);
+      font-family: sans-serif;
+    }
+    .bubble {
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle at 30% 30%, #ffffff, #00c3ff);
+      border-radius: 50%;
+      position: absolute;
+      bottom: -60px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .bubble:active {
+      transform: scale(0.8);
+    }
+    #score {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 28px;
+      color: white;
+      text-shadow: 2px 2px 4px #000;
+    }
+  </style>
+</head>
+<body>
+  <div id="score">0</div>
+
+  <script>
+    const scoreDisplay = document.getElementById("score");
+    let score = 0;
+
+    function createBubble() {
+      const bubble = document.createElement("div");
+      bubble.classList.add("bubble");
+      bubble.style.left = Math.random() * (window.innerWidth - 60) + "px";
+      document.body.appendChild(bubble);
+
+      let bottom = -60;
+      const riseInterval = setInterval(() => {
+        if (bottom > window.innerHeight) {
+          bubble.remove();
+          clearInterval(riseInterval);
+        } else {
+          bottom += 2;
+          bubble.style.bottom = bottom + "px";
+        }
+      }, 10);
+
+      bubble.addEventListener("click", () => {
+        score++;
+        scoreDisplay.innerText = score;
+        bubble.remove();
+        clearInterval(riseInterval);
+      });
+
+      bubble.addEventListener("touchstart", () => {
+        score++;
+        scoreDisplay.innerText = score;
+        bubble.remove();
+        clearInterval(riseInterval);
+      });
+    }
+
+    setInterval(createBubble, 1000);
+  </script>
+</body>
+</html>

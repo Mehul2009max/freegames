@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Car Dodger</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(#333, #555);
+      font-family: sans-serif;
+    }
+    #player {
+      width: 50px;
+      position: absolute;
+      bottom: 20px;
+      left: 125px;
+    }
+    .enemy {
+      width: 50px;
+      position: absolute;
+      top: -100px;
+    }
+    #leftBtn, #rightBtn {
+      position: absolute;
+      bottom: 20px;
+      width: 80px;
+      height: 80px;
+      opacity: 0.5;
+      background: white;
+      border: none;
+      font-size: 24px;
+      border-radius: 50%;
+    }
+    #leftBtn { left: 20px; }
+    #rightBtn { right: 20px; }
+    #score {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 28px;
+      color: white;
+      text-shadow: 2px 2px 4px #000;
+    }
+  </style>
+</head>
+<body>
+  <img id="player" src="https://cdn-icons-png.flaticon.com/512/743/743922.png" alt="player car" />
+  <button id="leftBtn">⬅️</button>
+  <button id="rightBtn">➡️</button>
+  <div id="score">0</div>
+
+  <script>
+    const player = document.getElementById("player");
+    const leftBtn = document.getElementById("leftBtn");
+    const rightBtn = document.getElementById("rightBtn");
+    const scoreDisplay = document.getElementById("score");
+    let playerX = 125;
+    let enemies = [];
+    let score = 0;
+    let gameInterval;
+
+    function movePlayer(direction) {
+      if (direction === "left") {
+        playerX -= 20;
+        if (playerX < 0) playerX = 0;
+      } else if (direction === "right") {
+        playerX += 20;
+        if (playerX > window.innerWidth - 50) playerX = window.innerWidth - 50;
+      }
+      player.style.left = playerX + "px";
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") movePlayer("left");
+      if (e.key === "ArrowRight") movePlayer("right");
+    });
+
+    leftBtn.addEventListener("click", () => movePlayer("left"));
+    rightBtn.addEventListener("click", () => movePlayer("right"));
+
+    function createEnemy() {
+      const enemy = document.createElement("img");
+      enemy.src = "https://cdn-icons-png.flaticon.com/512/743/743920.png";
+      enemy.classList.add("enemy");
+      enemy.style.left = Math.random() * (window.innerWidth - 50) + "px";
+      document.body.appendChild(enemy);
+      enemies.push(enemy);
+    }
+
+    function updateEnemies() {
+      enemies.forEach(enemy => {
+        let top = parseInt(enemy.style.top || -100);
+        top += 5;
+        enemy.style.top = top + "px";
+
+        const playerRect = player.getBoundingClientRect();
+        const enemyRect = enemy.getBoundingClientRect();
+
+        if (
+          enemyRect.left < playerRect.right &&
+          enemyRect.right > playerRect.left &&
+          enemyRect.bottom > playerRect.top &&
+          enemyRect.top < playerRect.bottom
+        ) {
+          endGame();
+        }
+
+        if (top > window.innerHeight) {
+          score++;
+          scoreDisplay.innerText = score;
+          enemy.remove();
+        }
+      });
+
+      enemies = enemies.filter(enemy => enemy.parentElement);
+    }
+
+    function gameLoop() {
+      updateEnemies();
+      requestAnimationFrame(gameLoop);
+    }
+
+    function startGame() {
+      gameLoop();
+      gameInterval = setInterval(createEnemy, 1500);
+    }
+
+    function endGame() {
+      clearInterval(gameInterval);
+      alert("Game Over! Your score: " + score + ". Refresh to play again!");
+      location.reload();
+    }
+
+    startGame();
+  </script>
+</body>
+</html>
