@@ -1,1 +1,69 @@
-<h1>Catch the Dot - Coming Soon!</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Catch the Dot - Stylish</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(#ff9a9e, #fad0c4);
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+    #dot {
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle at 30% 30%, #fff, #ff4b2b);
+      position: absolute;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
+    }
+    #dot:active {
+      transform: scale(0.85);
+    }
+    #score {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 32px;
+      color: white;
+      text-shadow: 2px 2px 5px #000;
+    }
+  </style>
+</head>
+<body>
+  <div id="score">0</div>
+  <div id="dot"></div>
+  <audio id="popSound" src="https://www.soundjay.com/button/button-3.mp3"></audio>
+
+  <script>
+    const dot = document.getElementById("dot");
+    const scoreDisplay = document.getElementById("score");
+    const popSound = document.getElementById("popSound");
+    let score = 0;
+
+    function moveDot() {
+      dot.style.left = Math.random() * (window.innerWidth - 60) + "px";
+      dot.style.top = Math.random() * (window.innerHeight - 60) + "px";
+    }
+
+    dot.addEventListener("click", () => {
+      score++;
+      scoreDisplay.innerText = score;
+      moveDot();
+      popSound.play();
+    });
+
+    dot.addEventListener("touchstart", () => {
+      score++;
+      scoreDisplay.innerText = score;
+      moveDot();
+      popSound.play();
+    });
+
+    moveDot();
+  </script>
+</body>
+</html>
